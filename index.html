@@ -121,35 +121,39 @@
     <code>&lt;script src="https://toastzero.lupinevault.com/lupinetoast.js"&gt;&lt;/script&gt;</code>
     <p>Use the functions:</p>
     <ul>
-      <li><code>lupine.success("Title", "Message")</code></li>
-      <li><code>lupine.info("Title", "Message")</code></li>
-      <li><code>lupine.error("Title", "Message")</code></li>
-      <li><code>lupine.custom("#hexColor", { "Title": "Message" })</code></li>
-    </ul>
+      <li><code>lupine.success({ "Title": "Message" }, "Extra Info")</code></li>
+      <li><code>lupine.info({ "Title": "Message" }, "Extra Info")</code></li>
+      <li><code>lupine.error({ "Title": "Message" }, "Extra Info")</code></li>
+      <li><code>lupine.custom("#hexColor", "Title", { "Title": "Message" }, "Extra Info")</code></li>
+    </ul>    
   </div>
 
   <h1>Toast0</h1>
   <div class="buttons">
-    <button onclick="lupine.success('Success!', 'Everything worked.')">Success</button>
-    <button onclick="lupine.info('Info', 'Heads up, this is a tip.')">Info</button>
-    <button onclick="lupine.error('Error!', 'Something went wrong.')">Error</button>
+    <button onclick="lupine.success({ 'Success!': 'Everything worked.' }, 'Here are some more details about the operation.')">Success</button>
+    <button onclick="lupine.info({ 'Heads Up': 'This is a tip.' }, 'This might help avoid errors in the future.')">Info</button>
+    <button onclick="lupine.error({ 'Error!': 'Something went wrong.' }, 'Try restarting your system and checking your connection.')">Error</button>
     <button onclick="triggerCustomToast()">Custom</button>
-  </div>
+  </div>  
 
   <div class="custom-inputs">
     <input type="text" id="customColor" placeholder="Hex Color (#ff00ff)">
     <input type="text" id="customTitle" placeholder="Custom Title">
     <input type="text" id="customMsg" placeholder="Custom Message">
+    <input type="text" id="customExtra" placeholder="Extra Info (optional)">
   </div>
+  
 
   <script src="lupinetoast.js"></script>
   <script>
-    function triggerCustomToast() {
-      const color = document.getElementById('customColor').value || '#6f42c1';
-      const title = document.getElementById('customTitle').value || 'Custom';
-      const message = document.getElementById('customMsg').value || 'This is a custom toast.';
-      lupine.custom(color, { [title]: message });
-    }
+function triggerCustomToast() {
+  const color = document.getElementById('customColor').value || '#6f42c1';
+  const title = document.getElementById('customTitle').value || 'Custom';
+  const message = document.getElementById('customMsg').value || 'This is a custom toast.';
+  const extraInfo = document.getElementById('customExtra').value || 'This is expandable extra information.';
+
+  lupine.custom(color, title, { [title]: message }, extraInfo);
+}
 
     document.getElementById('help-icon').addEventListener('click', () => {
       const card = document.getElementById('help-card');

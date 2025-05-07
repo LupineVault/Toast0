@@ -1,5 +1,4 @@
 const lupine = (function () {
-
     (function loadFontAwesome() {
         const existingLink = document.querySelector('link[href*="font-awesome"], link[href*="fontawesome"]');
         if (!existingLink) {
@@ -12,6 +11,7 @@ const lupine = (function () {
             document.head.appendChild(link);
         }
     })();
+
     let container = document.getElementById('lupine-container');
     if (!container) {
         container = document.createElement('div');
@@ -28,55 +28,99 @@ const lupine = (function () {
         });
     }
 
-    function createToast(type, color, iconClass, title, message) {
+    function createToast(type, color, iconClass, messages = {}, extraInfo = "") {
+        const title = Object.keys(messages)[0] || "Notice";
+        const message = messages[title] || "";
+
         const toast = document.createElement('div');
         toast.className = 'lupine-toast';
+        toast.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+        toast.style.transform = 'translateX(100%)';
+        toast.style.opacity = '0';
+
         toast.innerHTML = `
-            <div style="
+            <div class="lupine-toast-inner" style="
                 display: flex;
-                align-items: center;
+                flex-direction: column;
                 background: ${color};
                 color: white;
                 padding: 10px 15px;
                 border-radius: 5px;
                 box-shadow: 0 2px 8px rgba(0,0,0,0.2);
                 min-width: 250px;
-                position: relative;
                 font-family: sans-serif;
+                cursor: pointer;
+                overflow: hidden;
             ">
-                <i class="${iconClass}" style="margin-right: 10px;"></i>
-                <div style="flex: 1;">
-                    <strong style="display: block;">${title}</strong>
-                    <span>${message}</span>
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <i class="${iconClass}"></i>
+                        <div>
+                            <strong style="display: block;">${title}</strong>
+                            <span>${message}</span>
+                        </div>
+                    </div>
+                    <i class="fas fa-times" style="cursor: pointer;"></i>
                 </div>
-                <i class="fas fa-times" style="margin-left: 10px; cursor: pointer;"></i>
+                <div class="lupine-extra-info" style="
+                    max-height: 0;
+                    overflow: hidden;
+                    transition: max-height 0.3s ease;
+                    margin-top: 5px;
+                    font-size: 0.85em;
+                    line-height: 1.4;
+                ">${extraInfo}</div>
             </div>
         `;
 
+        const inner = toast.querySelector('.lupine-toast-inner');
         const closeBtn = toast.querySelector('.fa-times');
-        closeBtn.addEventListener('click', () => container.removeChild(toast));
+        const extra = toast.querySelector('.lupine-extra-info');
+
+        // Close button removes toast
+        closeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(100%)';
+            setTimeout(() => container.removeChild(toast), 300);
+        });
+
+        inner.addEventListener('click', () => {
+            if (extra.style.maxHeight === '0px' || !extra.style.maxHeight) {
+                extra.style.maxHeight = '500px';
+            } else {
+                extra.style.maxHeight = '0';
+            }
+        });
 
         container.appendChild(toast);
 
-        setTimeout(() => {
-            if (container.contains(toast)) container.removeChild(toast);
+        requestAnimationFrame(() => {
+            toast.style.transform = 'translateX(0)';
+            toast.style.opacity = '1';
+        });
+
+        const timeout = setTimeout(() => {
+            if (container.contains(toast) && extra.style.maxHeight === '0px') {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => container.removeChild(toast), 300);
+            }
         }, 5000);
     }
 
     return {
-        success(title = "Success", message = "") {
-            createToast("success", "#28a745", "fas fa-check-circle", title, message);
+        success(messages = { "Success": "" }, extra = "") {
+            createToast("success", "#28a745", "fas fa-check-circle", messages, extra);
         },
-        info(title = "Info", message = "") {
-            createToast("info", "#17a2b8", "fas fa-info-circle", title, message);
+        info(messages = { "Info": "" }, extra = "") {
+            createToast("info", "#17a2b8", "fas fa-info-circle", messages, extra);
         },
-        error(title = "Error", message = "") {
-            createToast("error", "#dc3545", "fas fa-exclamation-circle", title, message);
+        error(messages = { "Error": "" }, extra = "") {
+            createToast("error", "#dc3545", "fas fa-exclamation-circle", messages, extra);
         },
-        custom(color = "#333", content = {}) {
-            const title = Object.keys(content)[0] || "Notice";
-            const message = content[title] || "";
-            createToast("custom", color, "fas fa-bell", title, message);
+        custom(color = "#333", title = "Notice", messages = { "Custom": "" }, extra = "") {
+            createToast("custom", color, "fas fa-bell", { [title]: messages[title] || "" }, extra);
         }
     };
 })();
