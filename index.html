@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Toast0</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: #0e0e1a;
+      color: #f0f0f0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    h1 {
+      color: #0ff;
+      margin-bottom: 20px;
+      text-shadow: 0 0 8px #0ff;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    button {
+      background: #111;
+      border: 2px solid #0ff;
+      color: #0ff;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+    }
+
+    button:hover {
+      background: #0ff;
+      color: #111;
+      box-shadow: 0 0 20px #0ff;
+    }
+
+    .custom-inputs {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .custom-inputs input {
+      padding: 8px 12px;
+      border-radius: 5px;
+      border: none;
+      outline: none;
+      background: #1e1e2f;
+      color: #0ff;
+      border: 1px solid #0ff;
+    }
+
+    #help-icon {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      cursor: pointer;
+      font-size: 1.5rem;
+      color: #0ff;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(5px);
+      border-radius: 50%;
+      padding: 8px;
+      border: 1px solid #0ff;
+      box-shadow: 0 0 8px #0ff;
+    }
+
+    #help-card {
+      position: absolute;
+      top: 60px;
+      left: 20px;
+      width: 300px;
+      background: rgba(15, 15, 30, 0.9);
+      border-radius: 10px;
+      padding: 20px;
+      color: #0ff;
+      font-size: 0.9rem;
+      border: 1px solid #0ff;
+      backdrop-filter: blur(8px);
+      display: none;
+      z-index: 1000;
+      box-shadow: 0 0 15px #0ff;
+    }
+
+    code {
+      background: rgba(0,255,255,0.1);
+      padding: 2px 5px;
+      border-radius: 3px;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <i id="help-icon" class="fas fa-question"></i>
+  <div id="help-card">
+    <h3>Toast0 usage</h3>
+    <p>Import the script:</p>
+    <code>&lt;script src="https://toastzero.lupinevault.com/lupinetoast.js"&gt;&lt;/script&gt;</code>
+    <p>Use the functions:</p>
+    <ul>
+      <li><code>lupine.success("Title", "Message")</code></li>
+      <li><code>lupine.info("Title", "Message")</code></li>
+      <li><code>lupine.error("Title", "Message")</code></li>
+      <li><code>lupine.custom("#hexColor", { "Title": "Message" })</code></li>
+    </ul>
+  </div>
+
+  <h1>Toast0</h1>
+  <div class="buttons">
+    <button onclick="lupine.success('Success!', 'Everything worked.')">Success</button>
+    <button onclick="lupine.info('Info', 'Heads up, this is a tip.')">Info</button>
+    <button onclick="lupine.error('Error!', 'Something went wrong.')">Error</button>
+    <button onclick="triggerCustomToast()">Custom</button>
+  </div>
+
+  <div class="custom-inputs">
+    <input type="text" id="customColor" placeholder="Hex Color (#ff00ff)">
+    <input type="text" id="customTitle" placeholder="Custom Title">
+    <input type="text" id="customMsg" placeholder="Custom Message">
+  </div>
+
+  <script src="lupinetoast.js"></script>
+  <script>
+    function triggerCustomToast() {
+      const color = document.getElementById('customColor').value || '#6f42c1';
+      const title = document.getElementById('customTitle').value || 'Custom';
+      const message = document.getElementById('customMsg').value || 'This is a custom toast.';
+      lupine.custom(color, { [title]: message });
+    }
+
+    document.getElementById('help-icon').addEventListener('click', () => {
+      const card = document.getElementById('help-card');
+      if (card.style.display === 'none' || card.style.display === '') {
+        card.style.display = 'block';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</body>
+</html>
